@@ -2,13 +2,15 @@ var items = []
 
 var notifyComponents = function() {
   $(ListStore).trigger('storeHasChanged')
-}
+};
 
 var findItemById = function(id) {
   return items.filter(function(item) {
     return item.id === id
   })[0]
-},
+};
+
+var URL_ROOT = "https://listalous.herokuapp.com/lists/delphine";
 
 ListStore = {
 
@@ -26,10 +28,11 @@ ListStore = {
       notifyComponents()
     })
   },
+
   addItem: function(itemDescription) {
     var creationRequest = $.ajax({
       type: 'POST',
-      url: 'http://listalous.herokuapp.com/lists/delphine/items',
+      url: URL_ROOT + '/items',
       data: { description: itemDescription, completed: false }
     })
     creationRequest.done(function(itemDataFromServer) {
@@ -37,13 +40,14 @@ ListStore = {
       notifyComponents()
     })
   },
+
   toggleCompleteness: function(itemId) {
     var item = findItemById(itemId);
     var currentCompletedValue = item.completed;
 
     var updateRequest = $.ajax({
       type: 'PUT',
-      url: "https://listalous.herokuapp.com/lists/delphine/items/" + itemId,
+      url: URL_ROOT + '/items/' + itemId,
       data: { completed: !currentCompletedValue }
     })
 
@@ -52,15 +56,17 @@ ListStore = {
       notifyComponents()
     })
   },
+
   deleteItem: function(itemId) {
     var item = findItemById(itemId);
     var deleteRequest = $.ajax({
       type: 'DELETE',
-      url: "https://listalous.herokuapp.com/lists/delphine/items/" + itemId
-    })
+      url: URL_ROOT + '/items/' + itemId
+    });
 
     deleteRequest.done(function(deletedItemData) {
       items.splice(items.indexOf(item), 1);
       notifyComponents();
     })
- }}
+  }
+}
